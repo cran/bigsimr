@@ -1,0 +1,11 @@
+2891f9371e5037142f35fb6737050aec *DESCRIPTION
+cf12ca4a224e8eea50052db94facee93 *NAMESPACE
+dc166b855c4c87c9a0d3ce1eee50ae33 *R/bigsimr.R
+123d7ab9f9377dc3ee90fa5111c0f188 *R/distributions.R
+e6cc15876eaf26384bdbc2a546e8fa15 *README.md
+2dafdebcf474bfb4ffd7776227bbb376 *inst/COPYRIGHTS
+4c7b886999e005fbfc30ede1785c3ddc *man/bigsimr_setup.Rd
+2803de9df26201f4be792750ae7f98ee *man/distributions_setup.Rd
+24cb77fe480095357dd6e5f66f2fda1e *man/figures/logo.png
+7cc4c4d4312d5399e9e56a4b63b4f8f3 *tests/testthat.R
+34d681456287a0217ba301c3166c01f9 *tests/testthat/test-bigsimr.R
