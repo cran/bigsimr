@@ -1,6 +1,6 @@
 Package: bigsimr
 Title: Fast Generation of High-Dimensional Random Vectors
-Version: 0.11.1
+Version: 0.11.2
 Authors@R: 
     c(person(given = "Alex",
              family = "Knudson",
@@ -24,9 +24,9 @@ Imports: JuliaCall
 Suggests: testthat (>= 3.0.0)
 Config/testthat/edition: 3
 NeedsCompilation: no
-Packaged: 2021-06-23 20:31:46 UTC; dtran
+Packaged: 2021-09-08 19:29:08 UTC; dtran
 Author: Alex Knudson [aut],
   Grant Schissler [aut, cre]
 Maintainer: Grant Schissler <aschissler@unr.edu>
 Repository: CRAN
-Date/Publication: 2021-06-24 11:00:04 UTC
+Date/Publication: 2021-09-11 23:50:05 UTC
