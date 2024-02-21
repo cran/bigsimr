@@ -8,23 +8,23 @@ data with a target correlation and arbitrary marginal distributions via
 Gaussian copula. It utilizes
 [Bigsimr.jl](https://github.com/SchisslerGroup/Bigsimr.jl) for its core
 routines. For full documentation and examples, please see the
-[Bigsimr.jl docs](https://SchisslerGroup.github.io/Bigsimr.jl/stable/).
+[Bigsimr.jl docs](https://schisslergroup.github.io/Bigsimr.jl/stable/).
 
 ## Features
 
--   **Pearson matching** - employs a matching algorithm (Xiao and
-    Zhou 2019) to account for the non-linear transformation in the
-    Normal-to-Anything (NORTA) step
--   **Spearman and Kendall matching** - Use explicit transformations
-    (Lebrun and Dutfoy 2009)
--   **Nearest Correlation Matrix** - Calculate the nearest positive
-    [semi]definite correlation matrix (Qi and Sun 2006)
--   **Fast Approximate Correlation Matrix** - Calculate an approximation
-    to the nearest positive definite correlation matrix
--   **Random Correlation Matrix** - Generate random positive
-    [semi]definite correlation matrices
--   **Fast Multivariate Normal Generation** - Utilize multithreading to
-    generate multivariate normal samples in parallel
+- **Pearson matching** - employs a matching algorithm (Xiao and
+  Zhou 2019) to account for the non-linear transformation in the
+  Normal-to-Anything (NORTA) step
+- **Spearman and Kendall matching** - Use explicit transformations
+  (Lebrun and Dutfoy 2009)
+- **Nearest Correlation Matrix** - Calculate the nearest positive
+  \[semi\]definite correlation matrix (Qi and Sun 2006)
+- **Fast Approximate Correlation Matrix** - Calculate an approximation
+  to the nearest positive definite correlation matrix
+- **Random Correlation Matrix** - Generate random positive
+  \[semi\]definite correlation matrices
+- **Fast Multivariate Normal Generation** - Utilize multithreading to
+  generate multivariate normal samples in parallel
 
 ## Installation
 
@@ -51,11 +51,10 @@ from [JuliaCall](https://github.com/Non-Contradiction/JuliaCall).
 
 ``` r
 library(bigsimr)
-Sys.setenv(JULIA_NUM_THREADS = parallel::detectCores()) # activate multithreading
 bs <- bigsimr_setup()
 dist <- distributions_setup()
 
-set.seed(2020-02-28)
+set.seed(2024-02-20)
 ```
 
 ### Examples
@@ -65,42 +64,53 @@ Pearson matching
 ``` r
 (target_corr <- bs$cor_randPD(3))
 #>            [,1]       [,2]       [,3]
-#> [1,]  1.0000000 -0.3566613 -0.4686234
-#> [2,] -0.3566613  1.0000000  0.6501013
-#> [3,] -0.4686234  0.6501013  1.0000000
-margins <- c(dist$Binomial(20, 0.2), dist$Beta(2, 3), dist$LogNormal(3, 1))
+#> [1,]  1.0000000 -0.1770422  0.2197788
+#> [2,] -0.1770422  1.0000000 -0.8153085
+#> [3,]  0.2197788 -0.8153085  1.0000000
+
+margins <- c(
+  dist$Binomial(20, 0.2), 
+  dist$Beta(2, 3), 
+  dist$LogNormal(3, 1)
+)
+
 (adjusted_corr <- bs$pearson_match(target_corr, margins))
 #>            [,1]       [,2]       [,3]
-#> [1,]  1.0000000 -0.3670106 -0.6537634
-#> [2,] -0.3670106  1.0000000  0.8431715
-#> [3,] -0.6537634  0.8431715  1.0000000
+#> [1,]  1.0000000 -0.1820291  0.2874494
+#> [2,] -0.1820291  1.0000000 -0.9941172
+#> [3,]  0.2874494 -0.9941172  1.0000000
+
 x <- bs$rvec(100000, adjusted_corr, margins)
+
 bs$cor(x, bs$Pearson)
 #>            [,1]       [,2]       [,3]
-#> [1,]  1.0000000 -0.3592258 -0.4693409
-#> [2,] -0.3592258  1.0000000  0.6483799
-#> [3,] -0.4693409  0.6483799  1.0000000
+#> [1,]  1.0000000 -0.1712600  0.2117211
+#> [2,] -0.1712600  1.0000000 -0.6679074
+#> [3,]  0.2117211 -0.6679074  1.0000000
 ```
 
 Spearman/Kendall matching
 
 ``` r
 (spearman_corr <- bs$cor_randPD(3))
-#>            [,1]       [,2]       [,3]
-#> [1,]  1.0000000  0.5696526 -0.5277236
-#> [2,]  0.5696526  1.0000000 -0.1333224
-#> [3,] -0.5277236 -0.1333224  1.0000000
+#>           [,1]      [,2]      [,3]
+#> [1,] 1.0000000 0.4768102 0.8865416
+#> [2,] 0.4768102 1.0000000 0.5318276
+#> [3,] 0.8865416 0.5318276 1.0000000
+
 (adjusted_corr <- bs$cor_convert(spearman_corr, bs$Spearman, bs$Pearson))
-#>            [,1]       [,2]       [,3]
-#> [1,]  1.0000000  0.5877329 -0.5456254
-#> [2,]  0.5877329  1.0000000 -0.1395015
-#> [3,] -0.5456254 -0.1395015  1.0000000
+#>           [,1]      [,2]      [,3]
+#> [1,] 1.0000000 0.4941437 0.8954010
+#> [2,] 0.4941437 1.0000000 0.5497588
+#> [3,] 0.8954010 0.5497588 1.0000000
+
 x <- bs$rvec(100000, adjusted_corr, margins)
+
 bs$cor(x, bs$Spearman)
-#>            [,1]       [,2]       [,3]
-#> [1,]  1.0000000  0.5633441 -0.5227178
-#> [2,]  0.5633441  1.0000000 -0.1322200
-#> [3,] -0.5227178 -0.1322200  1.0000000
+#>           [,1]      [,2]      [,3]
+#> [1,] 1.0000000 0.4663302 0.8746458
+#> [2,] 0.4663302 1.0000000 0.5276638
+#> [3,] 0.8746458 0.5276638 1.0000000
 ```
 
 Nearest correlation matrix
@@ -108,28 +118,28 @@ Nearest correlation matrix
 ``` r
 s <- bs$cor_randPSD(200)
 r <- bs$cor_convert(s, bs$Spearman, bs$Pearson)
-bs$iscorrelation(r)
+bs$is_correlation(r)
 #> [1] FALSE
 ```
 
 ``` r
 p <- bs$cor_nearPD(r)
-bs$iscorrelation(p)
+bs$is_correlation(p)
 #> [1] TRUE
 ```
 
 Fast approximate nearest correlation matrix
 
 ``` r
-s = bs$cor_randPSD(2000)
-r = bs$cor_convert(s, bs$Spearman, bs$Pearson)
-bs$iscorrelation(r)
+s <- bs$cor_randPSD(2000)
+r <- bs$cor_convert(s, bs$Spearman, bs$Pearson)
+bs$is_correlation(r)
 #> [1] FALSE
 ```
 
 ``` r
-p = bs$cor_fastPD(r)
-bs$iscorrelation(p)
+p <- bs$cor_fastPD(r)
+bs$is_correlation(p)
 #> [1] TRUE
 ```
 
